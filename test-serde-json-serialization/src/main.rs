@@ -31,17 +31,27 @@ impl Move {
 fn main() {
     let a = Move::new(1, Direction::SOUTH);
 
-    // write to file
+    // File serialization
     let file = File::create("serialized.txt").unwrap();
     let _ = serde_json::to_writer(file, &a);
 
-    // read from file
     let file = File::open("serialized.txt").unwrap();
     let buf_reader = BufReader::new(file);
 
-    // deserialize
     let b: Move = serde_json::from_reader(buf_reader).unwrap();
 
-    println!("Movement parameters: {:?}", a);
-    println!("Deserialized Movement parameters: {:?}", b);
+    println!("(File) Movement parameters: {:?}", a);
+    println!("(File) Deserialized Movement parameters: {:?}", b);
+
+    // vector serialization
+    let ser_vec = serde_json::to_vec(&a);
+    let unwrapped_vec = ser_vec.unwrap();
+
+    let b: Move = serde_json::from_slice(&unwrapped_vec).unwrap();
+
+    println!("(Vec serialization) Movement parameters: {:?}", a);
+    println!(
+        "(Vec serialization) Deserialized Movement parameters: {:?}",
+        b
+    );
 }
